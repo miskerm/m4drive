@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, type ReactNode } from 'react'
+import useSWR from 'swr'
 import { ArrowLeft, BarChart3, Bell, BookOpen, Check, CircleHelp, ClipboardList, Clock3, Download, Flame, House, MapPin, MessageSquare, Pencil, ShieldCheck, Sparkles, Trophy, UserRound, LogOut, Users, FileText, Plus, Upload } from 'lucide-react'
 
 const dashboardImage = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2026-10-16_21-35-23-B3Fy090WLgQF1rIrdkIYWaoi8lMye7.jpg'
@@ -359,6 +360,7 @@ function InfoPage({ page, onHome, onMock }: { page: PageView; onHome: () => void
 function StudyPage({ onBack }: { onBack: () => void }) {
   const { user } = useAuth()
   const [openModule, setOpenModule] = useState<string | null>(null)
+  const { data: uploadedModules } = useSWR<Array<{ id: number; title: string; description: string; file_name: string }>>('/api/modules', (url) => fetch(url).then((response) => response.json()))
   const notes = [
     { topic: 'Signs & Signals', content: 'Learn the meanings of South African road signs. Red signs are regulatory, yellow are warnings, and blue are informational.', image: '/study-road-scene.png' },
     { topic: 'Vehicle Controls', content: 'Master pedals, steering, mirrors, lights, and the safety controls you need before your first test.', image: '/study-road-scene.png' },
@@ -388,6 +390,11 @@ function StudyPage({ onBack }: { onBack: () => void }) {
               <p className="mt-4 leading-6 text-[#607477]">{note.content}</p>
               <button onClick={() => setOpenModule(openModule === note.topic ? null : note.topic)} className="mt-6 rounded-lg border border-[#087f78] bg-white px-4 py-2 font-bold text-[#087f78]">{openModule === note.topic ? 'Close module' : 'Open module notes'}</button>{openModule === note.topic && <div className="mt-4 rounded-lg bg-[#effafa] p-4 text-sm leading-6 text-[#38575a]"><strong>Key lesson:</strong> Read the signs carefully, check mirrors before moving, and practise one safe decision at a time. This module is ready for learner review.</div>}
               </div></article>
+          ))}
+          {uploadedModules?.map((module) => (
+            <article key={module.id} className="overflow-hidden rounded-xl border border-[#b9d8d3] bg-[#effaf7] shadow-sm">
+              <div className="p-6"><div className="flex items-center gap-3"><BookOpen className="size-6 text-[#168f82]" /><h2 className="text-lg font-extrabold">{module.title}</h2></div><p className="mt-4 leading-6 text-[#607477]">{module.description}</p><p className="mt-5 text-sm font-bold text-[#087f78]">PDF study guide: {module.file_name}</p></div>
+            </article>
           ))}
         </div>
       </div>
