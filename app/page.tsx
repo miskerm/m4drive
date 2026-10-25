@@ -237,19 +237,30 @@ function LoginPage({ onHome, onDashboard, onAdmin }: { onHome: () => void; onDas
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [adminError, setAdminError] = useState('')
+  const [busy, setBusy] = useState(false)
   const { login } = useAuth()
-  const handleLogin = (plan: 'free' | 'premium_1000') => {
-    login({ name: 'Unknown', email: email || 'user@example.com', plan })
-    onDashboard()
+  const handleLogin = async (plan: 'free' | 'premium_1000') => {
+    const normalizedEmail = email.trim().toLowerCase()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) { setAdminError('Enter a valid email address.'); return }
+    if (!password) { setAdminError('Enter your password.'); return }
+    setBusy(true); setAdminError('')
+    try {
+      const response = await fetch('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: normalizedEmail, password }) })
+      const data = await response.json()
+      if (!response.ok) { setAdminError(data.error || 'Unable to sign in.'); return }
+      login({ name: data.user.name, email: data.user.email, plan })
+      onDashboard()
+    } catch { setAdminError('Could not reach the sign-in service.') } finally { setBusy(false) }
   }
-  const handleAdminLogin = () => {
-    if (email.trim().toLowerCase() === 'lol@gmail.com' && password === '12345678') {
-      setAdminError('')
-      login({ name: 'Admin', email: 'lol@gmail.com', plan: 'premium_1000' })
-      onAdmin()
-    } else {
-      setAdminError('Use the admin email and password provided.')
-    }
+  const handleAdminLogin = async () => {
+    if (email.trim().toLowerCase() !== 'lol@gmail.com' || password !== '12345678') { setAdminError('Use the exact admin email and password provided.'); return }
+    setBusy(true); setAdminError('')
+    try {
+      const response = await fetch('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'lol@gmail.com', password: '12345678' }) })
+      const data = await response.json()
+      if (!response.ok) { setAdminError(data.error || 'Admin sign-in failed.'); return }
+      login({ name: data.user.name, email: data.user.email, plan: 'premium_1000' }); onAdmin()
+    } catch { setAdminError('Could not reach the sign-in service.') } finally { setBusy(false) }
   }
   return (
     <main className="mx-auto min-h-screen max-w-[1280px] px-5 py-16">
@@ -264,7 +275,7 @@ function LoginPage({ onHome, onDashboard, onAdmin }: { onHome: () => void; onDas
           <input type="email" placeholder="Enter your email" value={email} onChange={(e) => { setEmail(e.target.value); setAdminError('') }} className="w-full rounded-lg border border-[#cbd9d7] px-4 py-3" />
           <input type="password" placeholder="Password" value={password} onChange={(e) => { setPassword(e.target.value); setAdminError('') }} className="w-full rounded-lg border border-[#cbd9d7] px-4 py-3" />
           {adminError && <p role="alert" className="text-sm font-semibold text-[#d94c4c]">{adminError}</p>}
-          <button onClick={() => handleLogin('free')} className="w-full rounded-lg bg-[#087f78] px-5 py-3 font-bold text-white">
+          <button disabled={busy} onClick={() => handleLogin('free')} className="w-full rounded-lg bg-[#087f78] px-5 py-3 font-bold text-white">
             Login (Free Access)
           </button>
           <button onClick={() => handleLogin('premium_1000')} className="w-full rounded-lg bg-[#ff9318] px-5 py-3 font-bold text-white">
