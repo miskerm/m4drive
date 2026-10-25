@@ -360,7 +360,7 @@ function InfoPage({ page, onHome, onMock }: { page: PageView; onHome: () => void
 function StudyPage({ onBack }: { onBack: () => void }) {
   const { user } = useAuth()
   const [openModule, setOpenModule] = useState<string | null>(null)
-  const { data: uploadedModules } = useSWR<Array<{ id: number; title: string; description: string; file_name: string }>>('/api/modules', (url) => fetch(url).then((response) => response.json()))
+  const { data: uploadedModules } = useSWR<Array<{ id: number; title: string; description: string; file_name: string }>>('/api/modules', (url: string) => fetch(url).then((response) => response.json()))
   const notes = [
     { topic: 'Signs & Signals', content: 'Learn the meanings of South African road signs. Red signs are regulatory, yellow are warnings, and blue are informational.', image: '/study-road-scene.png' },
     { topic: 'Vehicle Controls', content: 'Master pedals, steering, mirrors, lights, and the safety controls you need before your first test.', image: '/study-road-scene.png' },
@@ -948,7 +948,7 @@ function MainApp({ view, setView }: { view: PageView | 'home' | 'dashboard' | 'm
         <PricingPage onHome={() => setView('dashboard')} />
       ) : view === 'dashboard' ? (
         <Dashboard onMock={() => setView('mock')} onHome={() => setView('home')} onPage={setView as (page: PageView) => void} />
-      ) : view !== 'home' && view !== 'mock' ? (
+      ) : view !== 'home' ? (
         <InfoPage page={view as PageView} onHome={() => setView('dashboard')} onMock={() => setView('mock')} />
       ) : (
         <Landing onDashboard={() => setView('dashboard')} onMock={() => setView('mock')} />
@@ -958,10 +958,13 @@ function MainApp({ view, setView }: { view: PageView | 'home' | 'dashboard' | 'm
 }
 
 function MockTest({ onBack }: { onBack: () => void }) {
+  const { data: importedQuestions } = useSWR<Array<{ id: number; question: string; options: string[]; correct_answer: string }>>('/api/questions', (url: string) => fetch(url).then((response) => response.json()))
+  const hasImported = Boolean(importedQuestions?.length)
+  const activeQuestion = importedQuestions?.[0]
   const [current, setCurrent] = useState(64)
   const [selected, setSelected] = useState('Interior mirror')
   const [submitted, setSubmitted] = useState(false)
-  const options = ['Nr 9', 'Interior mirror', 'Nr 11']
+  const options = activeQuestion?.options ?? ['Nr 9', 'Interior mirror', 'Nr 11']
 
   return (
     <main className="min-h-screen bg-[#f6faf9] text-[#142238]">
@@ -1003,9 +1006,9 @@ function MockTest({ onBack }: { onBack: () => void }) {
         <section className="rounded-xl border border-[#dfe7e6] bg-white p-7">
           <div className="flex items-center gap-3">
             <span className="rounded-md bg-[#e6f5f3] px-3 py-1 text-xs font-bold uppercase text-[#168f82]">Question {current}</span>
-            <span className="text-xs font-bold uppercase text-[#168f82]">Vehicle Controls</span>
+            <span className="text-xs font-bold uppercase text-[#168f82]">{hasImported ? 'Imported questions' : 'Vehicle Controls'}</span>
           </div>
-          <h2 className="mt-4 text-2xl font-extrabold">Which numbered foot control slows or stops the vehicle?</h2>
+          <h2 className="mt-4 text-2xl font-extrabold">{activeQuestion?.question ?? 'Which numbered foot control slows or stops the vehicle?'}</h2>
           <div className="mt-8 space-y-3">
             {options.map((option) => (
               <label key={option} className={`flex cursor-pointer items-center gap-4 rounded-lg border-2 p-4 ${selected === option ? 'border-[#168f82] bg-[#e6f5f3]' : 'border-[#d8e2e0] bg-white'}`}>
@@ -1014,7 +1017,7 @@ function MockTest({ onBack }: { onBack: () => void }) {
               </label>
             ))}
           </div>
-          {submitted && <div className="mt-8 rounded-lg bg-[#e4f5e9] p-4 text-center font-bold text-[#21855b]">✓ Mock test submitted! Your score: 52/64</div>}
+          {submitted && <div className="mt-8 rounded-lg bg-[#e4f5e9] p-4 text-center font-bold text-[#21855b]">Mock test submitted! {hasImported ? `Imported question loaded (${importedQuestions?.length ?? 0} available).` : 'Your score: 52/64'}</div>}
         </section>
       </div>
     </main>
