@@ -22,7 +22,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     headers: {
       'Content-Type': contentType,
       'Content-Length': String(bytes.byteLength),
-      'Content-Disposition': `attachment; filename="${String(row.file_name ?? 'module-file').replace(/["\r\n]/g, '')}"`,
+      'Content-Disposition': `inline; filename="${String(row.file_name ?? 'module-file').replace(/["\r\n]/g, '')}"`,
       'Cache-Control': 'private, max-age=3600',
     },
   })

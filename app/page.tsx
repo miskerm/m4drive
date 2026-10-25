@@ -393,7 +393,7 @@ function StudyPage({ onBack }: { onBack: () => void }) {
           ))}
           {uploadedModules?.map((module) => (
             <article key={module.id} className="overflow-hidden rounded-xl border border-[#b9d8d3] bg-[#effaf7] shadow-sm">
-              <div className="p-6"><div className="flex items-center gap-3"><BookOpen className="size-6 text-[#168f82]" /><h2 className="text-lg font-extrabold">{module.title}</h2></div><p className="mt-4 leading-6 text-[#607477]">{module.description}</p><p className="mt-5 text-sm font-bold text-[#087f78]">Saved file: {module.file_name}</p><a href={`/api/modules/${module.id}`} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#087f78] px-4 py-2 text-sm font-bold text-white hover:bg-[#066f70]"><Download className="size-4" aria-hidden="true" />Open saved file</a></div>
+              <div className="p-6"><div className="flex items-center gap-3"><BookOpen className="size-6 text-[#168f82]" /><h2 className="text-lg font-extrabold">{module.title}</h2></div><p className="mt-4 leading-6 text-[#607477]">{module.description}</p><p className="mt-5 text-sm font-bold text-[#087f78]">Saved file: {module.file_name}</p><div className="mt-5 overflow-hidden rounded-xl border border-[#b9d8d3] bg-white"><iframe title={`${module.title} PDF`} src={`/api/modules/${module.id}`} className="h-[520px] w-full" /></div></div>
             </article>
           ))}
         </div>
