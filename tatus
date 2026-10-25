@@ -1,0 +1,703 @@
+[1mdiff --git a/README.md b/README.md[m
+[1mindex 3a8b7f4..36fb617 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -1,5 +1 @@[m
+[31m-<<<<<<< HEAD[m
+[31m-# quiz-driving[m
+[31m-=======[m
+[31m-# m4drive[m
+[31m->>>>>>> deefa6eb625f814cb14f3d46fd7d184c95f2244e[m
+[32m+[m[32m# quiz-driving[m
+\ No newline at end of file[m
+[1mdiff --git a/app/admin/page.tsx b/app/admin/page.tsx[m
+[1mindex 99e54c4..d49bcc8 100644[m
+[1m--- a/app/admin/page.tsx[m
+[1m+++ b/app/admin/page.tsx[m
+[36m@@ -1,29 +1,5 @@[m
+[31m-'use client'[m
+[32m+[m[32mimport { redirect } from 'next/navigation'[m
+ [m
+[31m-import { useState } from 'react'[m
+[31m-[m
+[31m-export default function AdminPage() {[m
+[31m-  const [question, setQuestion] = useState('')[m
+[31m-  const [questions, setQuestions] = useState<string[]>([])[m
+[31m-  const [pdf, setPdf] = useState('')[m
+[31m-[m
+[31m-  return ([m
+[31m-    <main className="min-h-screen bg-[#f6faf9] px-5 py-8 text-[#142238]">[m
+[31m-      <div className="mx-auto max-w-[1280px]">[m
+[31m-        <header className="mb-8 flex items-center justify-between rounded-xl border border-[#d8e2e0] bg-white px-6 py-4 shadow-sm">[m
+[31m-          <div><p className="text-xs font-bold uppercase tracking-widest text-[#168f82]">DrivoPrep</p><h1 className="text-2xl font-extrabold">Admin Dashboard</h1></div>[m
+[31m-          <a href="/#home" className="rounded-lg border border-[#bfcecb] px-4 py-2 font-semibold text-[#087f78]">Client site</a>[m
+[31m-        </header>[m
+[31m-        <section className="grid gap-4 md:grid-cols-4">[m
+[31m-          {[['Paid learners', '128'], ['Revenue', '64,000 ETB'], ['Active devices', '96'], ['Mock questions', String(questions.length + 64)]].map(([label, value]) => <div key={label} className="rounded-xl border border-[#d8e2e0] bg-white p-5 shadow-sm"><p className="text-sm font-semibold text-[#607477]">{label}</p><p className="mt-3 text-2xl font-extrabold">{value}</p></div>)}[m
+[31m-        </section>[m
+[31m-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_.9fr]">[m
+[31m-          <div className="rounded-xl border border-[#d8e2e0] bg-white p-6 shadow-sm"><h2 className="text-lg font-extrabold">Paid learners and devices</h2><div className="mt-4 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b text-[#607477]"><th className="p-3">Learner</th><th className="p-3">Plan</th><th className="p-3">Device</th><th className="p-3">Status</th></tr></thead><tbody>{[['Lerato M.', 'Premium 500 ETB', 'Chrome / Linux', 'Paid'], ['Amanuel K.', 'Premium 1000 ETB', 'Android', 'Paid'], ['Sara T.', 'Premium 500 ETB', 'iPhone', 'Paid']].map((row) => <tr key={row[0]} className="border-b border-[#edf0ef]"><td className="p-3 font-bold">{row[0]}</td><td className="p-3">{row[1]}</td><td className="p-3">{row[2]}</td><td className="p-3 font-bold text-[#168f82]">{row[3]}</td></tr>)}</tbody></table></div></div>[m
+[31m-          <div className="rounded-xl border border-[#d8e2e0] bg-white p-6 shadow-sm"><h2 className="text-lg font-extrabold">Upload study PDF</h2><p className="mt-2 text-sm text-[#607477]">Choose a PDF for the Study module. This frontend preview does not persist files.</p><label className="mt-5 inline-flex cursor-pointer rounded-lg bg-[#087f78] px-4 py-3 font-bold text-white">Choose PDF<input type="file" accept=".pdf" className="sr-only" onChange={(event) => setPdf(event.target.files?.[0]?.name ?? '')} /></label>{pdf && <p className="mt-3 text-sm font-bold text-[#168f82]">Ready: {pdf}</p>}</div>[m
+[31m-        </section>[m
+[31m-        <section className="mt-6 rounded-xl border border-[#d8e2e0] bg-white p-6 shadow-sm"><h2 className="text-lg font-extrabold">Learning module controls</h2><p className="mt-2 text-sm text-[#607477]">Open the learner modules to review content and manage the frontend experience.</p><div className="mt-4 flex flex-wrap gap-3"><a href="/?module=study" className="rounded-lg bg-[#168f82] px-4 py-3 font-bold text-white">Open Study Modules</a><a href="/?module=practice" className="rounded-lg bg-[#1784c0] px-4 py-3 font-bold text-white">Open Practice</a><a href="/?module=full-mock" className="rounded-lg bg-[#ef6a57] px-4 py-3 font-bold text-white">Open Mock Test</a></div></section>[m
+[31m-        <section className="mt-6 rounded-xl border border-[#d8e2e0] bg-white p-6 shadow-sm"><h2 className="text-lg font-extrabold">Add mock-test question</h2><div className="mt-4 flex flex-col gap-3 md:flex-row"><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Type a new question" className="flex-1 rounded-lg border border-[#cbd9d7] p-3" /><button onClick={() => { if (question.trim()) { setQuestions((items) => [...items, question.trim()]); setQuestion('') } }} className="rounded-lg bg-[#168f82] px-5 py-3 font-bold text-white">Add question</button></div>{questions.length > 0 && <ul className="mt-5 flex flex-col gap-2">{questions.map((item, index) => <li key={`${item}-${index}`} className="rounded-lg bg-[#effafa] p-3 text-sm font-semibold">Q{index + 65}. {item}</li>)}</ul>}</section>[m
+[31m-      </div>[m
+[31m-    </main>[m
+[31m-  )[m
+[32m+[m[32mexport default function AdminIndexPage() {[m
+[32m+[m[32m  redirect('/admin/users')[m
+ }[m
+[1mdiff --git a/app/layout.tsx b/app/layout.tsx[m
+[1mindex 5c7b11f..a50c00d 100644[m
+[1m--- a/app/layout.tsx[m
+[1m+++ b/app/layout.tsx[m
+[36m@@ -1,5 +1,6 @@[m
+ import { Analytics } from '@vercel/analytics/next'[m
+ import type { Metadata, Viewport } from 'next'[m
+[32m+[m[32mimport { Providers } from '@/components/providers'[m
+ import './globals.css'[m
+ [m
+ export const metadata: Metadata = {[m
+[36m@@ -41,7 +42,7 @@[m [mexport default function RootLayout({[m
+   return ([m
+     <html lang="en">[m
+       <body className="antialiased">[m
+[31m-        {children}[m
+[32m+[m[32m        <Providers>{children}</Providers>[m
+         {process.env.NODE_ENV === 'production' && <Analytics />}[m
+       </body>[m
+     </html>[m
+[1mdiff --git a/next.config.mjs b/next.config.mjs[m
+[1mindex 4cd9948..1e02261 100644[m
+[1m--- a/next.config.mjs[m
+[1m+++ b/next.config.mjs[m
+[36m@@ -6,6 +6,11 @@[m [mconst nextConfig = {[m
+   images: {[m
+     unoptimized: true,[m
+   },[m
+[32m+[m[32m  experimental: {[m
+[32m+[m[32m    serverActions: {[m
+[32m+[m[32m      bodySizeLimit: '25mb',[m
+[32m+[m[32m    },[m
+[32m+[m[32m  },[m
+ }[m
+ [m
+ export default nextConfig[m
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 77edfbd..c28c5eb 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -10,6 +10,7 @@[m
+   },[m
+   "dependencies": {[m
+     "@base-ui/react": "^1.5.0",[m
+[32m+[m[32m    "@libsql/client": "^0.18.0",[m
+     "@vercel/analytics": "1.6.1",[m
+     "class-variance-authority": "^0.7.1",[m
+     "clsx": "^2.1.1",[m
+[36m@@ -19,7 +20,8 @@[m
+     "react-dom": "^19",[m
+     "shadcn": "^4.11.0",[m
+     "tailwind-merge": "^3.3.1",[m
+[31m-    "tw-animate-css": "^1.4.0"[m
+[32m+[m[32m    "tw-animate-css": "^1.4.0",[m
+[32m+[m[32m    "xlsx": "^0.18.5"[m
+   },[m
+   "devDependencies": {[m
+     "@tailwindcss/postcss": "^4.3.3",[m
+[1mdiff --git a/pnpm-lock.yaml b/pnpm-lock.yaml[m
+[1mindex 0c50bf0..1298313 100644[m
+[1m--- a/pnpm-lock.yaml[m
+[1m+++ b/pnpm-lock.yaml[m
+[36m@@ -1,3 +1,104 @@[m
+[32m+[m[32m---[m
+[32m+[m[32mlockfileVersion: '9.0'[m
+[32m+[m
+[32m+[m[32mimporters:[m
+[32m+[m
+[32m+[m[32m  .:[m
+[32m+[m[32m    configDependencies: {}[m
+[32m+[m[32m    packageManagerDependencies:[m
+[32m+[m[32m      pnpm:[m
+[32m+[m[32m        specifier: 12.3.4[m
+[32m+[m[32m        version: 12.3.4[m
+[32m+[m
+[32m+[m[32mpackages:[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.darwin-arm64@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-PAyUol8T1+/+ViOiXAt51ECA+QnfXCqz6foL4bW+LsoX0NcVd5XVEM2mRQu+LV4oc7uRz9zf9U0P+XFfuQeDAw==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [darwin][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.darwin-x64@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-fxP9JCk0Cdye+ePuj+GJJLMUMTqHGWRdb1dtv4How876uQ2ehxvenpgiYAir/ceO9PsYUZkFTtyZdx+rRu5QOA==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [darwin][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-arm64-musl@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-FBOt0/7ye6O6q4AllVV5QMviB6qE6fqkeczV/+MDWQsmo+QJrlfsh6X7CpH/tClVpBZEyIbjpUoT8bNhCYBxEg==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m[32m    libc: [musl][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-arm64@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-t71AVA7LRqiKTyZ5xMYaZc2n5DfdpMbfokZuiIOXHBOM03ECnF0t4iYwaBDqJgVjlKYUOwaF/bRQajGNA4cJ4w==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m[32m    libc: [glibc][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-x64-musl@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-RPmk7Jb/aYaFvL2iyDN/AtMY+hUEsue732WmXpcuQ9tBpMnGyA5py7Z3+e+qmQaJ0zY/4ni9jJiyPBQHujmv6w==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m[32m    libc: [musl][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-x64@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-2ZqOlSPkfwX1h5cR+FPiWf8+F+2hZT/3TvhUK5sigHqwaQCIiq8R7CGxhndKs63JtcLi2a1Qpo+wX/EoyfjyJQ==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m[32m    libc: [glibc][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.win32-arm64@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-ANyrHqyqco6SXBysUTRF74itDyyraea7IbFsKFdNXTjcFnfycTDx37EwuhdpPYFNSIh2JhUG4fByclsRfiHX7w==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [win32][m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.win32-x64@12.3.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-WH/KqBPY/hq2Tb7SgQltEZytimcjgKRaCRL/aM9CI0c67iKc5TVmHUhIiL3Ux9FB4bWn36i6XewUcScQI+zG8w==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [win32][m
+[32m+[m
+[32m+[m[32m  pnpm@12.3.4:[m
+[32m+[m[32m    resolution: {integrity: sha512-lhqkH7B32joEpEHZ+OFevAyW2o73ELLrZ7+e58sGEOq9SPH9hfUc/+c4RnhfoPh8VqOocqHYk/hEZ0G1zORUVw==}[m
+[32m+[m[32m    engines: {node: '>=18.*'}[m
+[32m+[m[32m    hasBin: true[m
+[32m+[m
+[32m+[m[32msnapshots:[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.darwin-arm64@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.darwin-x64@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-arm64-musl@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-arm64@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-x64-musl@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.linux-x64@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.win32-arm64@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@pnpm/exe.win32-x64@12.3.4':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  pnpm@12.3.4:[m
+[32m+[m[32m    optionalDependencies:[m
+[32m+[m[32m      '@pnpm/exe.darwin-arm64': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.darwin-x64': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.linux-arm64': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.linux-arm64-musl': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.linux-x64': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.linux-x64-musl': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.win32-arm64': 12.3.4[m
+[32m+[m[32m      '@pnpm/exe.win32-x64': 12.3.4[m
+[32m+[m
+[32m+[m[32m---[m
+ lockfileVersion: '9.0'[m
+ [m
+ settings:[m
+[36m@@ -11,6 +112,9 @@[m [mimporters:[m
+       '@base-ui/react':[m
+         specifier: ^1.5.0[m
+         version: 1.5.0(@date-fns/tz@1.4.1)(@types/react@19.2.14)(date-fns@4.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)[m
+[32m+[m[32m      '@libsql/client':[m
+[32m+[m[32m        specifier: ^0.18.0[m
+[32m+[m[32m        version: 0.18.0[m
+       '@vercel/analytics':[m
+         specifier: 1.6.1[m
+         version: 1.6.1(next@16.4.0(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)[m
+[36m@@ -41,6 +145,9 @@[m [mimporters:[m
+       tw-animate-css:[m
+         specifier: ^1.4.0[m
+         version: 1.4.0[m
+[32m+[m[32m      xlsx:[m
+[32m+[m[32m        specifier: ^0.18.5[m
+[32m+[m[32m        version: 0.18.5[m
+     devDependencies:[m
+       '@tailwindcss/postcss':[m
+         specifier: ^4.3.3[m
+[36m@@ -445,6 +552,63 @@[m [mpackages:[m
+   '@jridgewell/trace-mapping@0.3.31':[m
+     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}[m
+ [m
+[32m+[m[32m  '@libsql/client@0.18.0':[m
+[32m+[m[32m    resolution: {integrity: sha512-zMCCo58vv7w27j7+cnt/GW+X6/Rih6cHZ86PKi0AxCMOqMfrVgG9OZ5lW2bDMJhSeOjsv2szH2nJF3A9l36UmA==}[m
+[32m+[m
+[32m+[m[32m  '@libsql/core@0.18.0':[m
+[32m+[m[32m    resolution: {integrity: sha512-N8RR2CIpcgtbKZnXs2KVpw2lJQfinUj3I56e7qRDRpK18Hty0Rr8nr00VmFb4R/DsqOanPB/TaP3+QAQLZeXMg==}[m
+[32m+[m
+[32m+[m[32m  '@libsql/darwin-arm64@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-K+2RIB1OGFPYQbfay48GakLhqf3ArcbHqPFu7EZiaUcRgFcdw8RoltsMyvbj5ix2fY0HV3Q3Ioa/ByvQdaSM0A==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [darwin][m
+[32m+[m
+[32m+[m[32m  '@libsql/darwin-x64@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-OtT+KFHsKFy1R5FVadr8FJ2Bb1mghtXTyJkxv0trocq7NuHntSki1eUbxpO5ezJesDvBlqFjnWaYYY516QNLhQ==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [darwin][m
+[32m+[m
+[32m+[m[32m  '@libsql/hrana-client@0.10.0':[m
+[32m+[m[32m    resolution: {integrity: sha512-OoA4EMqRAC7kn7V2P6EQqRcpZf2W+AjsNIyCizBg339Tq/aMC7sRnzs3SklderhmQWAqEzvv8A2vhxVmWpkVvw==}[m
+[32m+[m
+[32m+[m[32m  '@libsql/isomorphic-ws@0.1.5':[m
+[32m+[m[32m    resolution: {integrity: sha512-DtLWIH29onUYR00i0GlQ3UdcTRC6EP4u9w/h9LxpUZJWRMARk6dQwZ6Jkd+QdwVpuAOrdxt18v0K2uIYR3fwFg==}[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm-gnueabihf@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-CD4n4zj7SJTHso4nf5cuMoWoMSS7asn5hHygsDuhRl8jjjCTT3yE+xdUvI4J7zsyb53VO5ISh4cwwOtf6k2UhQ==}[m
+[32m+[m[32m    cpu: [arm][m
+[32m+[m[32m    os: [linux][m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm-musleabihf@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-2Z9qBVpEJV7OeflzIR3+l5yAd4uTOLxklScYTwpZnkm2vDSGlC1PRlueLaufc4EFITkLKXK2MWBpexuNJfMVcg==}[m
+[32m+[m[32m    cpu: [arm][m
+[32m+[m[32m    os: [linux][m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm64-gnu@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-gURBqaiXIGGwFNEaUj8Ldk7Hps4STtG+31aEidCk5evMMdtsdfL3HPCpvys+ZF/tkOs2MWlRWoSq7SOuCE9k3w==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm64-musl@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-fwgYZ0H8mUkyVqXZHF3mT/92iIh1N94Owi/f66cPVNsk9BdGKq5gVpoKO+7UxaNzuEH1roJp2QEwsCZMvBLpqg==}[m
+[32m+[m[32m    cpu: [arm64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-x64-gnu@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-y14V0vY0nmMC6G0pHeJcEarcnGU2H6cm21ZceRkacWHvQAEhAG0latQkCtoS2njFOXiYIg+JYPfAoWKbi82rkg==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-x64-musl@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-gquqwA/39tH4pFl+J9n3SOMSymjX+6kZ3kWgY3b94nXFTwac9bnFNMffIomgvlFaC4ArVqMnOZD3nuJ3H3VO1w==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [linux][m
+[32m+[m
+[32m+[m[32m  '@libsql/win32-x64-msvc@0.5.29':[m
+[32m+[m[32m    resolution: {integrity: sha512-4/0CvEdhi6+KjMxMaVbFM2n2Z44escBRoEYpR+gZg64DdetzGnYm8mcNLcoySaDJZNaBd6wz5DNdgRmcI4hXcg==}[m
+[32m+[m[32m    cpu: [x64][m
+[32m+[m[32m    os: [win32][m
+[32m+[m
+   '@modelcontextprotocol/sdk@1.29.0':[m
+     resolution: {integrity: sha512-zo37mZA9hJWpULgkRpowewez1y6ML5GsXJPY8FI0tBBCd77HEvza4jDqRKOXgHNn867PVGCyTdzqpz0izu5ZjQ==}[m
+     engines: {node: '>=18'}[m
+[36m@@ -455,6 +619,9 @@[m [mpackages:[m
+       '@cfworker/json-schema':[m
+         optional: true[m
+ [m
+[32m+[m[32m  '@neon-rs/load@0.0.4':[m
+[32m+[m[32m    resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}[m
+[32m+[m
+   '@next/env@16.4.0':[m
+     resolution: {integrity: sha512-pyLlT5oafGlX8X7xjgGNXz5dNIDSxREm+qD6i9VLSZiZFopA/XWl8NM/KPmLx/8EG/++c49iid3gNWSQW1+2dQ==}[m
+ [m
+[36m@@ -653,6 +820,9 @@[m [mpackages:[m
+   '@types/validate-npm-package-name@4.0.2':[m
+     resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}[m
+ [m
+[32m+[m[32m  '@types/ws@8.18.2':[m
+[32m+[m[32m    resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}[m
+[32m+[m
+   '@vercel/analytics@1.6.1':[m
+     resolution: {integrity: sha512-oH9He/bEM+6oKlv3chWuOOcp8Y6fo6/PSro8hEkgCW3pu9/OiCXiUpRUogDh3Fs3LH2sosDrx8CxeOLBEE+afg==}[m
+     peerDependencies:[m
+[36m@@ -683,6 +853,10 @@[m [mpackages:[m
+     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}[m
+     engines: {node: '>= 0.6'}[m
+ [m
+[32m+[m[32m  adler-32@1.3.1:[m
+[32m+[m[32m    resolution: {integrity: sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+   ajv-formats@3.0.1:[m
+     resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}[m
+     peerDependencies:[m
+[36m@@ -761,6 +935,10 @@[m [mpackages:[m
+   caniuse-lite@1.0.30001769:[m
+     resolution: {integrity: sha512-BCfFL1sHijQlBGWBMuJyhZUhzo7wer5sVj9hqekB/7xn0Ypy+pER/edCYQm4exbXj4WiySGp40P8UuTh6w1srg==}[m
+ [m
+[32m+[m[32m  cfb@1.2.2:[m
+[32m+[m[32m    resolution: {integrity: sha512-KfdUZsSOw19/ObEWasvBP/Ac4reZvAGauZhs6S/gqNhXhI7cKwvlH7ulj+dOEYnca4bm4SGo8C1bTAQvnTjgQA==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+   chalk@5.6.2:[m
+     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}[m
+     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}[m
+[36m@@ -786,6 +964,10 @@[m [mpackages:[m
+   code-block-writer@13.0.3:[m
+     resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}[m
+ [m
+[32m+[m[32m  codepage@1.15.0:[m
+[32m+[m[32m    resolution: {integrity: sha512-3g6NUTPd/YtuuGrhMnOMRjFc+LJw/bnMp3+0r/Wcz3IXUuCosKRJvMphm5+Q+bvTVGcJJuRvVLuYba+WojaFaA==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+   commander@11.1.0:[m
+     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}[m
+     engines: {node: '>=16'}[m
+[36m@@ -830,6 +1012,11 @@[m [mpackages:[m
+       typescript:[m
+         optional: true[m
+ [m
+[32m+[m[32m  crc-32@1.2.2:[m
+[32m+[m[32m    resolution: {integrity: sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m[32m    hasBin: true[m
+[32m+[m
+   cross-spawn@7.0.6:[m
+     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}[m
+     engines: {node: '>= 8'}[m
+[36m@@ -882,6 +1069,10 @@[m [mpackages:[m
+     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}[m
+     engines: {node: '>= 0.8'}[m
+ [m
+[32m+[m[32m  detect-libc@2.0.2:[m
+[32m+[m[32m    resolution: {integrity: sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==}[m
+[32m+[m[32m    engines: {node: '>=8'}[m
+[32m+[m
+   detect-libc@2.1.2:[m
+     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}[m
+     engines: {node: '>=8'}[m
+[36m@@ -1022,6 +1213,10 @@[m [mpackages:[m
+     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}[m
+     engines: {node: '>= 0.6'}[m
+ [m
+[32m+[m[32m  frac@1.1.2:[m
+[32m+[m[32m    resolution: {integrity: sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+   fresh@2.0.0:[m
+     resolution: {integrity: sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==}[m
+     engines: {node: '>= 0.8'}[m
+[36m@@ -1204,6 +1399,9 @@[m [mpackages:[m
+   jose@6.2.3:[m
+     resolution: {integrity: sha512-YYVDInQKFJfR/xa3ojUTl8c2KoTwiL1R5Wg9YCydwH0x0B9grbzlg5HC7mMjCtUJjbQ/YnGEZIhI5tCgfTb4Hw==}[m
+ [m
+[32m+[m[32m  js-base64@3.9.4:[m
+[32m+[m[32m    resolution: {integrity: sha512-PtOMXpEGuP0RRiRXsjzHzl44dMHxSu2CPvAhinupR1tBa88me+1DPqsobl7eupn5UukjLkln1ZnAOAOXOrYG0Q==}[m
+[32m+[m
+   js-tokens@4.0.0:[m
+     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}[m
+ [m
+[36m@@ -1241,6 +1439,11 @@[m [mpackages:[m
+     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}[m
+     engines: {node: '>=6'}[m
+ [m
+[32m+[m[32m  libsql@0.5.29:[m
+[32m+[m[32m    resolution: {integrity: sha512-8lMP8iMgiBzzoNbAPQ59qdVcj6UaE/Vnm+fiwX4doX4Narook0a4GPKWBEv+CR8a1OwbfkgL18uBfBjWdF0Fzg==}[m
+[32m+[m[32m    cpu: [x64, arm64, wasm32, arm][m
+[32m+[m[32m    os: [darwin, linux, win32][m
+[32m+[m
+   lightningcss-android-arm64@1.32.0:[m
+     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}[m
+     engines: {node: '>= 12.0.0'}[m
+[36m@@ -1532,6 +1735,9 @@[m [mpackages:[m
+     resolution: {integrity: sha512-gjVS5hOP+M3wMm5nmNOucbIrqudzs9v/57bWRHQWLYklXqoXKrVfYW2W9+glfGsqtPgpiz5WwyEEB+ksXIx3gQ==}[m
+     engines: {node: '>=18'}[m
+ [m
+[32m+[m[32m  promise-limit@2.7.0:[m
+[32m+[m[32m    resolution: {integrity: sha512-7nJ6v5lnJsXwGprnGXga4wx6d1POjvi5Qmf1ivTRxTjH4Z/9Czja/UCMLVmB9N93GeWOU93XaFaEt6jbuoagNw==}[m
+[32m+[m
+   prompts@2.4.2:[m
+     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}[m
+     engines: {node: '>= 6'}[m
+[36m@@ -1688,6 +1894,10 @@[m [mpackages:[m
+     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}[m
+     engines: {node: '>=0.10.0'}[m
+ [m
+[32m+[m[32m  ssf@0.11.2:[m
+[32m+[m[32m    resolution: {integrity: sha512-+idbmIXoYET47hH+d7dfm2epdOMUDjqcB4648sTZ+t2JwoyBFL/insLfB/racrDmsKB3diwsDA696pZMieAC5g==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+   statuses@2.0.2:[m
+     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}[m
+     engines: {node: '>= 0.8'}[m
+[36m@@ -1831,13 +2041,38 @@[m [mpackages:[m
+     engines: {node: ^16.13.0 || >=18.0.0}[m
+     hasBin: true[m
+ [m
+[32m+[m[32m  wmf@1.0.2:[m
+[32m+[m[32m    resolution: {integrity: sha512-/p9K7bEh0Dj6WbXg4JG0xvLQmIadrner1bi45VMJTfnbVHsc7yIajZyoSoK60/dtVBs12Fm6WkUI5/3WAVsNMw==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+[32m+[m[32m  word@0.3.0:[m
+[32m+[m[32m    resolution: {integrity: sha512-OELeY0Q61OXpdUfTp+oweA/vtLVg5VDOXh+3he3PNzLGG/y0oylSOC1xRVj0+l4vQ3tj/bB1HVHv1ocXkQceFA==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m
+   wrappy@1.0.2:[m
+     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}[m
+ [m
+[32m+[m[32m  ws@8.22.0:[m
+[32m+[m[32m    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}[m
+[32m+[m[32m    engines: {node: '>=10.0.0'}[m
+[32m+[m[32m    peerDependencies:[m
+[32m+[m[32m      bufferutil: ^4.0.1[m
+[32m+[m[32m      utf-8-validate: '>=5.0.2'[m
+[32m+[m[32m    peerDependenciesMeta:[m
+[32m+[m[32m      bufferutil:[m
+[32m+[m[32m        optional: true[m
+[32m+[m[32m      utf-8-validate:[m
+[32m+[m[32m        optional: true[m
+[32m+[m
+   wsl-utils@0.3.1:[m
+     resolution: {integrity: sha512-g/eziiSUNBSsdDJtCLB8bdYEUMj4jR7AGeUo96p/3dTafgjHhpF4RiCFPiRILwjQoDXx5MqkBr4fwWtR3Ky4Wg==}[m
+     engines: {node: '>=20'}[m
+ [m
+[32m+[m[32m  xlsx@0.18.5:[m
+[32m+[m[32m    resolution: {integrity: sha512-dmg3LCjBPHZnQp5/F/+nnTa+miPJxUXB6vtk42YjBBKayDNagxGEeIdWApkYPOf3Z3pm3k62Knjzp7lMeTEtFQ==}[m
+[32m+[m[32m    engines: {node: '>=0.8'}[m
+[32m+[m[32m    hasBin: true[m
+[32m+[m
+   yallist@3.1.1:[m
+     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}[m
+ [m
+[36m@@ -2247,6 +2482,64 @@[m [msnapshots:[m
+       '@jridgewell/resolve-uri': 3.1.2[m
+       '@jridgewell/sourcemap-codec': 1.5.5[m
+ [m
+[32m+[m[32m  '@libsql/client@0.18.0':[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      '@libsql/core': 0.18.0[m
+[32m+[m[32m      '@libsql/hrana-client': 0.10.0[m
+[32m+[m[32m      js-base64: 3.9.4[m
+[32m+[m[32m      libsql: 0.5.29[m
+[32m+[m[32m      promise-limit: 2.7.0[m
+[32m+[m[32m    transitivePeerDependencies:[m
+[32m+[m[32m      - bufferutil[m
+[32m+[m[32m      - utf-8-validate[m
+[32m+[m
+[32m+[m[32m  '@libsql/core@0.18.0':[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      js-base64: 3.9.4[m
+[32m+[m
+[32m+[m[32m  '@libsql/darwin-arm64@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/darwin-x64@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/hrana-client@0.10.0':[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      '@libsql/isomorphic-ws': 0.1.5[m
+[32m+[m[32m      js-base64: 3.9.4[m
+[32m+[m[32m    transitivePeerDependencies:[m
+[32m+[m[32m      - bufferutil[m
+[32m+[m[32m      - utf-8-validate[m
+[32m+[m
+[32m+[m[32m  '@libsql/isomorphic-ws@0.1.5':[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      '@types/ws': 8.18.2[m
+[32m+[m[32m      ws: 8.22.0[m
+[32m+[m[32m    transitivePeerDependencies:[m
+[32m+[m[32m      - bufferutil[m
+[32m+[m[32m      - utf-8-validate[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm-gnueabihf@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm-musleabihf@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm64-gnu@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-arm64-musl@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-x64-gnu@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/linux-x64-musl@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+[32m+[m[32m  '@libsql/win32-x64-msvc@0.5.29':[m
+[32m+[m[32m    optional: true[m
+[32m+[m
+   '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':[m
+     dependencies:[m
+       '@hono/node-server': 1.19.14(hono@4.12.25)[m
+[36m@@ -2269,6 +2562,8 @@[m [msnapshots:[m
+     transitivePeerDependencies:[m
+       - supports-color[m
+ [m
+[32m+[m[32m  '@neon-rs/load@0.0.4': {}[m
+[32m+[m
+   '@next/env@16.4.0': {}[m
+ [m
+   '@next/swc-darwin-arm64@16.4.0':[m
+[36m@@ -2412,6 +2707,10 @@[m [msnapshots:[m
+ [m
+   '@types/validate-npm-package-name@4.0.2': {}[m
+ [m
+[32m+[m[32m  '@types/ws@8.18.2':[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      '@types/node': 24.10.4[m
+[32m+[m
+   '@vercel/analytics@1.6.1(next@16.4.0(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)':[m
+     optionalDependencies:[m
+       next: 16.4.0(@babel/core@7.29.7)(@types/node@24.10.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)[m
+[36m@@ -2422,6 +2721,8 @@[m [msnapshots:[m
+       mime-types: 3.0.2[m
+       negotiator: 1.0.0[m
+ [m
+[32m+[m[32m  adler-32@1.3.1: {}[m
+[32m+[m
+   ajv-formats@3.0.1(ajv@8.20.0):[m
+     optionalDependencies:[m
+       ajv: 8.20.0[m
+[36m@@ -2499,6 +2800,11 @@[m [msnapshots:[m
+ [m
+   caniuse-lite@1.0.30001769: {}[m
+ [m
+[32m+[m[32m  cfb@1.2.2:[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      adler-32: 1.3.1[m
+[32m+[m[32m      crc-32: 1.2.2[m
+[32m+[m
+   chalk@5.6.2: {}[m
+ [m
+   class-variance-authority@0.7.1:[m
+[36m@@ -2517,6 +2823,8 @@[m [msnapshots:[m
+ [m
+   code-block-writer@13.0.3: {}[m
+ [m
+[32m+[m[32m  codepage@1.15.0: {}[m
+[32m+[m
+   commander@11.1.0: {}[m
+ [m
+   commander@14.0.3: {}[m
+[36m@@ -2547,6 +2855,8 @@[m [msnapshots:[m
+     optionalDependencies:[m
+       typescript: 5.7.3[m
+ [m
+[32m+[m[32m  crc-32@1.2.2: {}[m
+[32m+[m
+   cross-spawn@7.0.6:[m
+     dependencies:[m
+       path-key: 3.1.1[m
+[36m@@ -2579,6 +2889,8 @@[m [msnapshots:[m
+ [m
+   depd@2.0.0: {}[m
+ [m
+[32m+[m[32m  detect-libc@2.0.2: {}[m
+[32m+[m
+   detect-libc@2.1.2: {}[m
+ [m
+   diff@8.0.4: {}[m
+[36m@@ -2750,6 +3062,8 @@[m [msnapshots:[m
+ [m
+   forwarded@0.2.0: {}[m
+ [m
+[32m+[m[32m  frac@1.1.2: {}[m
+[32m+[m
+   fresh@2.0.0: {}[m
+ [m
+   fs-extra@11.3.5:[m
+[36m@@ -2886,6 +3200,8 @@[m [msnapshots:[m
+ [m
+   jose@6.2.3: {}[m
+ [m
+[32m+[m[32m  js-base64@3.9.4: {}[m
+[32m+[m
+   js-tokens@4.0.0: {}[m
+ [m
+   js-yaml@4.2.0:[m
+[36m@@ -2912,6 +3228,21 @@[m [msnapshots:[m
+ [m
+   kleur@4.1.5: {}[m
+ [m
+[32m+[m[32m  libsql@0.5.29:[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      '@neon-rs/load': 0.0.4[m
+[32m+[m[32m      detect-libc: 2.0.2[m
+[32m+[m[32m    optionalDependencies:[m
+[32m+[m[32m      '@libsql/darwin-arm64': 0.5.29[m
+[32m+[m[32m      '@libsql/darwin-x64': 0.5.29[m
+[32m+[m[32m      '@libsql/linux-arm-gnueabihf': 0.5.29[m
+[32m+[m[32m      '@libsql/linux-arm-musleabihf': 0.5.29[m
+[32m+[m[32m      '@libsql/linux-arm64-gnu': 0.5.29[m
+[32m+[m[32m      '@libsql/linux-arm64-musl': 0.5.29[m
+[32m+[m[32m      '@libsql/linux-x64-gnu': 0.5.29[m
+[32m+[m[32m      '@libsql/linux-x64-musl': 0.5.29[m
+[32m+[m[32m      '@libsql/win32-x64-msvc': 0.5.29[m
+[32m+[m
+   lightningcss-android-arm64@1.32.0:[m
+     optional: true[m
+ [m
+[36m@@ -3158,6 +3489,8 @@[m [msnapshots:[m
+     dependencies:[m
+       parse-ms: 4.0.0[m
+ [m
+[32m+[m[32m  promise-limit@2.7.0: {}[m
+[32m+[m
+   prompts@2.4.2:[m
+     dependencies:[m
+       kleur: 3.0.3[m
+[36m@@ -3389,6 +3722,10 @@[m [msnapshots:[m
+ [m
+   source-map@0.6.1: {}[m
+ [m
+[32m+[m[32m  ssf@0.11.2:[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      frac: 1.1.2[m
+[32m+[m
+   statuses@2.0.2: {}[m
+ [m
+   stdin-discarder@0.2.2: {}[m
+[36m@@ -3497,13 +3834,29 @@[m [msnapshots:[m
+     dependencies:[m
+       isexe: 3.1.5[m
+ [m
+[32m+[m[32m  wmf@1.0.2: {}[m
+[32m+[m
+[32m+[m[32m  word@0.3.0: {}[m
+[32m+[m
+   wrappy@1.0.2: {}[m
+ [m
+[32m+[m[32m  ws@8.22.0: {}[m
+[32m+[m
+   wsl-utils@0.3.1:[m
+     dependencies:[m
+       is-wsl: 3.1.1[m
+       powershell-utils: 0.1.0[m
+ [m
+[32m+[m[32m  xlsx@0.18.5:[m
+[32m+[m[32m    dependencies:[m
+[32m+[m[32m      adler-32: 1.3.1[m
+[32m+[m[32m      cfb: 1.2.2[m
+[32m+[m[32m      codepage: 1.15.0[m
+[32m+[m[32m      crc-32: 1.2.2[m
+[32m+[m[32m      ssf: 0.11.2[m
+[32m+[m[32m      wmf: 1.0.2[m
+[32m+[m[32m      word: 0.3.0[m
+[32m+[m
+   yallist@3.1.1: {}[m
+ [m
+   yocto-spinner@1.2.0:[m
+[1mdiff --git a/pnpm-workspace.yaml b/pnpm-workspace.yaml[m
+[1mindex b5d8774..d5f19f7 100644[m
+[1m--- a/pnpm-workspace.yaml[m
+[1m+++ b/pnpm-workspace.yaml[m
+[36m@@ -1,4 +1,5 @@[m
+[31m-pmOnFail: ignore[m
+[32m+[m[32mpackages:[m
+[32m+[m[32m  - '.'[m
+ [m
+ minimumReleaseAgeExclude:[m
+   - '@next/*'[m
