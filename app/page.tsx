@@ -360,6 +360,11 @@ function InfoPage({ page, onHome, onMock }: { page: PageView; onHome: () => void
 function StudyPage({ onBack }: { onBack: () => void }) {
   const { user } = useAuth()
   const [openModule, setOpenModule] = useState<string | null>(null)
+  const [fullscreenModule, setFullscreenModule] = useState<number | null>(null)
+
+  const toggleFullscreen = (moduleId: number) => {
+    setFullscreenModule((current) => current === moduleId ? null : moduleId)
+  }
   const { data: uploadedModules } = useSWR<Array<{ id: number; title: string; description: string; file_name: string }>>('/api/modules', (url: string) => fetch(url).then((response) => response.json()))
   const notes = [
     { topic: 'Signs & Signals', content: 'Learn the meanings of South African road signs. Red signs are regulatory, yellow are warnings, and blue are informational.', image: '/study-road-scene.png' },
@@ -391,11 +396,28 @@ function StudyPage({ onBack }: { onBack: () => void }) {
               <button onClick={() => setOpenModule(openModule === note.topic ? null : note.topic)} className="mt-6 rounded-lg border border-[#087f78] bg-white px-4 py-2 font-bold text-[#087f78]">{openModule === note.topic ? 'Close module' : 'Open module notes'}</button>{openModule === note.topic && <div className="mt-4 rounded-lg bg-[#effafa] p-4 text-sm leading-6 text-[#38575a]"><strong>Key lesson:</strong> Read the signs carefully, check mirrors before moving, and practise one safe decision at a time. This module is ready for learner review.</div>}
               </div></article>
           ))}
-          {uploadedModules?.map((module) => (
-            <article key={module.id} className="overflow-hidden rounded-xl border border-[#b9d8d3] bg-[#effaf7] shadow-sm">
-              <div className="p-6"><div className="flex items-center gap-3"><BookOpen className="size-6 text-[#168f82]" /><h2 className="text-lg font-extrabold">{module.title}</h2></div><p className="mt-4 leading-6 text-[#607477]">{module.description}</p><p className="mt-5 text-sm font-bold text-[#087f78]">Saved file: {module.file_name}</p><div className="mt-5 overflow-hidden rounded-xl border border-[#b9d8d3] bg-white"><iframe title={`${module.title} PDF`} src={`/api/modules/${module.id}`} className="h-[520px] w-full" /></div></div>
-            </article>
-          ))}
+          {uploadedModules?.map((module) => {
+            const isFullscreen = fullscreenModule === module.id
+            return (
+              <article key={module.id} className={isFullscreen ? 'fixed inset-0 z-50 flex min-h-screen flex-col bg-white' : 'overflow-hidden rounded-xl border border-[#b9d8d3] bg-[#effaf7] shadow-sm'}>
+                <div className={isFullscreen ? 'flex items-center justify-between border-b border-[#d8e2e0] bg-white px-6 py-4' : 'p-6'}>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3"><BookOpen className="size-6 shrink-0 text-[#168f82]" /><h2 className="truncate text-lg font-extrabold">{module.title}</h2></div>
+                    {!isFullscreen && <><p className="mt-4 leading-6 text-[#607477]">{module.description}</p><p className="mt-5 text-sm font-bold text-[#087f78]">Saved file: {module.file_name}</p></>}
+                  </div>
+                  <div className="ml-4 flex shrink-0 gap-2">
+                    {isFullscreen && <button onClick={onBack} className="rounded-lg border border-[#bfcecb] px-4 py-2.5 font-semibold text-[#087f78]">Back to dashboard</button>}
+                    <button onClick={() => toggleFullscreen(module.id)} className="rounded-lg bg-[#087f78] px-4 py-2.5 font-bold text-white">
+                      {isFullscreen ? 'Exit full screen' : 'View full screen'}
+                    </button>
+                  </div>
+                </div>
+                <div className={isFullscreen ? 'min-h-0 flex-1 bg-[#eef4f2] p-4' : 'mt-5 overflow-hidden rounded-xl border border-[#b9d8d3] bg-white'}>
+                  <iframe title={`${module.title} PDF`} src={`/api/modules/${module.id}`} className={isFullscreen ? 'h-full min-h-0 w-full' : 'h-[520px] w-full'} />
+                </div>
+              </article>
+            )
+          })}
         </div>
       </div>
     </main>
